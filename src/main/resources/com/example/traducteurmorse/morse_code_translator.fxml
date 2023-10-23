@@ -4,11 +4,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.shape.Circle?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.traducteurmorse.MorseCodeTranslatorController"
       alignment="CENTER" spacing="10"
-      prefWidth="300" prefHeight="200">
+      prefWidth="300" prefHeight="300">
 
     <TextField fx:id="inputField" promptText="Enter text" />
 
@@ -16,4 +17,7 @@
 
     <Label fx:id="outputLabel" />
 
+    <StackPane>
+        <Circle fx:id="led" radius="20.0" fill="RED" />
+    </StackPane>
 </VBox>
