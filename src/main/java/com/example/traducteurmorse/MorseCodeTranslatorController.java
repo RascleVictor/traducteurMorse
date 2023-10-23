@@ -29,19 +29,9 @@ public class MorseCodeTranslatorController {
     @FXML
     private void initialize() {
         blinkingTimeline = new Timeline(
-                new KeyFrame(Duration.ZERO, e -> led.setFill(javafx.scene.paint.Color.RED)),
-                new KeyFrame(Duration.millis(dotDuration), e -> led.setFill(javafx.scene.paint.Color.GREEN)),
-                new KeyFrame(Duration.millis(dotDuration * 2), e -> led.setFill(javafx.scene.paint.Color.RED)),
-                new KeyFrame(Duration.millis(dotDuration * 3), e -> led.setFill(javafx.scene.paint.Color.GREEN)),
-                new KeyFrame(Duration.millis(dotDuration * 4), e -> led.setFill(javafx.scene.paint.Color.RED)),
-                new KeyFrame(Duration.millis(dotDuration * 5), e -> led.setFill(javafx.scene.paint.Color.GREEN)),
-                new KeyFrame(Duration.millis(dotDuration * 6), e -> led.setFill(javafx.scene.paint.Color.RED)),
-                new KeyFrame(Duration.millis(dotDuration * 7), e -> led.setFill(javafx.scene.paint.Color.GREEN)),
-                new KeyFrame(Duration.millis(dotDuration * 8), e -> led.setFill(javafx.scene.paint.Color.RED))
+                new KeyFrame(Duration.ZERO, e -> led.setFill(javafx.scene.paint.Color.RED))
         );
-        blinkingTimeline.setCycleCount(1); // Un cycle unique
     }
-
 
     @FXML
     private void translateButtonAction() {
@@ -56,19 +46,37 @@ public class MorseCodeTranslatorController {
     @FXML
     private void playMorseAnimation(String morseText) {
         blinkingTimeline.stop();
+        blinkingTimeline.getKeyFrames().clear();
 
         for (char c : morseText.toCharArray()) {
             if (c == '.') {
-                blinkingTimeline.setCycleCount(1);
+                addBlinkKeyFrames(dotDuration);
             } else if (c == '-') {
-                blinkingTimeline.setCycleCount(3);
+                addBlinkKeyFrames(dashDuration);
             } else if (c == '/') {
-                blinkingTimeline.setCycleCount(3);
+                addBlinkKeyFrames(slashDuration);
             } else if (c == ' ') {
-                blinkingTimeline.setCycleCount(7);
+                addSpaceKeyFrames(spaceDuration);
             }
-            blinkingTimeline.play();
         }
+
+        blinkingTimeline.setCycleCount(Timeline.INDEFINITE);
+        blinkingTimeline.play();
+    }
+
+    private void addBlinkKeyFrames(int duration) {
+        blinkingTimeline.getKeyFrames().addAll(
+                new KeyFrame(Duration.ZERO, e -> led.setFill(javafx.scene.paint.Color.RED)),
+                new KeyFrame(Duration.millis(duration / 2), e -> led.setFill(javafx.scene.paint.Color.GREEN)),
+                new KeyFrame(Duration.millis(duration), e -> led.setFill(javafx.scene.paint.Color.RED))
+        );
+    }
+
+    private void addSpaceKeyFrames(int duration) {
+        blinkingTimeline.getKeyFrames().addAll(
+                new KeyFrame(Duration.ZERO, e -> led.setFill(javafx.scene.paint.Color.RED)),
+                new KeyFrame(Duration.millis(duration), e -> led.setFill(javafx.scene.paint.Color.RED))
+        );
     }
 
     private String translateToMorse(String text) {
