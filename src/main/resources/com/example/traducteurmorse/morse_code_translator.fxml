@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.traducteurmorse.MorseCodeTranslatorController"
+      alignment="CENTER" spacing="10"
+      prefWidth="300" prefHeight="200">
+
+    <TextField fx:id="inputField" promptText="Enter text" />
+
+    <Button text="Translate" onAction="#translateButtonAction" />
+
+    <Label fx:id="outputLabel" />
+
+</VBox>
