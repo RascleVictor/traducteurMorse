@@ -3,6 +3,7 @@ package com.example.traducteurmorse;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
@@ -31,16 +32,22 @@ public class MorseCodeTranslatorController {
         blinkingTimeline = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> led.setFill(javafx.scene.paint.Color.RED))
         );
+        blinkingTimeline.setOnFinished(event -> led.setFill(javafx.scene.paint.Color.RED)); // Arrêter la LED à la fin de l'animation
     }
 
     @FXML
     private void translateButtonAction() {
         String text = inputField.getText().toUpperCase();
-        String translatedText = translateToMorse(text);
-        outputLabel.setText("Morse Code: " + translatedText);
+        if (!text.matches("^[A-Z0-9]+$")) {
+            // Afficher une alerte si le texte contient des caractères spéciaux
+            showAlert("Le texte ne doit contenir que des chiffres, des lettres majuscules et des lettres minuscules.");
+        } else {
+            String translatedText = translateToMorse(text);
+            outputLabel.setText("Morse Code: " + translatedText);
 
-        // Commencer l'animation de la LED lors de la traduction
-        playMorseAnimation(translatedText);
+            // Commencer l'animation de la LED lors de la traduction
+            playMorseAnimation(translatedText);
+        }
     }
 
     @FXML
@@ -77,6 +84,14 @@ public class MorseCodeTranslatorController {
                 new KeyFrame(Duration.ZERO, e -> led.setFill(javafx.scene.paint.Color.RED)),
                 new KeyFrame(Duration.millis(duration), e -> led.setFill(javafx.scene.paint.Color.RED))
         );
+    }
+
+    private void showAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private String translateToMorse(String text) {
