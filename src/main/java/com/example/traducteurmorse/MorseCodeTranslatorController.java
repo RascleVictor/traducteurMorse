@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.Duration;
@@ -32,20 +33,24 @@ public class MorseCodeTranslatorController {
         blinkingTimeline = new Timeline(
                 new KeyFrame(Duration.ZERO, e -> led.setFill(javafx.scene.paint.Color.RED))
         );
-        blinkingTimeline.setOnFinished(event -> led.setFill(javafx.scene.paint.Color.RED)); // Arrêter la LED à la fin de l'animation
+        inputField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                translateButtonAction();
+            }
+        });
     }
 
     @FXML
     private void translateButtonAction() {
         String text = inputField.getText().toUpperCase();
-        if (!text.matches("^[A-Z0-9]+$")) {
-            // Afficher une alerte si le texte contient des caractères spéciaux
+        if (!text.matches("^[A-Za-z0-9\\s]+$")) {
+            // Show an alert if the text contains special characters
             showAlert("Le texte ne doit contenir que des chiffres, des lettres majuscules et des lettres minuscules.");
         } else {
             String translatedText = translateToMorse(text);
             outputLabel.setText("Morse Code: " + translatedText);
 
-            // Commencer l'animation de la LED lors de la traduction
+            // Start the LED animation during translation
             playMorseAnimation(translatedText);
         }
     }
@@ -64,10 +69,12 @@ public class MorseCodeTranslatorController {
                 addBlinkKeyFrames(slashDuration);
             } else if (c == ' ') {
                 addSpaceKeyFrames(spaceDuration);
+            } else if (c == '#') {
+                break; // Exit the loop when you reach the end symbol
             }
         }
 
-        blinkingTimeline.setCycleCount(Timeline.INDEFINITE);
+        //blinkingTimeline.setCycleCount(1);
         blinkingTimeline.play();
     }
 
@@ -121,6 +128,7 @@ public class MorseCodeTranslatorController {
                 }
             }
         }
+        morseText.append("#");
 
         return morseText.toString();
     }
