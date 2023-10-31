@@ -1,15 +1,11 @@
 package com.example.traducteurmorse;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.util.Duration;
 
 
 public class MorseCodeTranslatorController {
@@ -26,19 +22,7 @@ public class MorseCodeTranslatorController {
     private int dashDuration = 3 * dotDuration; // Durée d'un tiret en ms
     private int spaceDuration = 7 * dotDuration; // Durée de l'espace entre les mots en ms
     private int slashDuration = 3 * dotDuration; // Durée d'un slash en ms
-    private Timeline blinkingTimeline;
 
-    @FXML
-    private void initialize() {
-        blinkingTimeline = new Timeline(
-                new KeyFrame(Duration.ZERO, e -> led.setFill(javafx.scene.paint.Color.RED))
-        );
-        inputField.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                translateButtonAction();
-            }
-        });
-    }
 
     @FXML
     private void translateButtonAction() {
@@ -49,50 +33,47 @@ public class MorseCodeTranslatorController {
         } else {
             String translatedText = translateToMorse(text);
             outputLabel.setText("Morse Code: " + translatedText);
-
-            // Start the LED animation during translation
-            playMorseAnimation(translatedText);
+            new Thread(() -> flashMorse(translatedText)).start();
         }
     }
 
-    @FXML
-    private void playMorseAnimation(String morseText) {
-        blinkingTimeline.stop();
-        blinkingTimeline.getKeyFrames().clear();
-
-        for (char c : morseText.toCharArray()) {
+    private void flashMorse(String morseCode) {
+        for (char c : morseCode.toCharArray()) {
             if (c == '.') {
-                addBlinkKeyFrames(dotDuration);
+                // LED allumée pour un point
+                led.setFill(Color.GREEN);
+                try {
+                    Thread.sleep(dotDuration); // Temps d'allumage pour un point (ajustez selon vos préférences)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                led.setFill(Color.BLACK); // Éteindre la LED
             } else if (c == '-') {
-                addBlinkKeyFrames(dashDuration);
-            } else if (c == '/') {
-                addBlinkKeyFrames(slashDuration);
+                // LED allumée pour un tiret
+                led.setFill(Color.GREEN);
+                try {
+                    Thread.sleep(slashDuration); // Temps d'allumage pour un tiret (ajustez selon vos préférences)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                led.setFill(Color.BLACK); // Éteindre la LED
             } else if (c == ' ') {
-                addSpaceKeyFrames(spaceDuration);
-            } else if (c == '#') {
-                break; // Exit the loop when you reach the end symbol
+                // Espace entre les caractères
+                try {
+                    Thread.sleep(spaceDuration); // Temps d'attente entre les caractères (ajustez selon vos préférences)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else if (c == '/') {
+                // Espace entre les mots
+                try {
+                    Thread.sleep(slashDuration); // Temps d'attente entre les mots (ajustez selon vos préférences)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
-
-        //blinkingTimeline.setCycleCount(1);
-        blinkingTimeline.play();
     }
-
-    private void addBlinkKeyFrames(int duration) {
-        blinkingTimeline.getKeyFrames().addAll(
-                new KeyFrame(Duration.ZERO, e -> led.setFill(javafx.scene.paint.Color.RED)),
-                new KeyFrame(Duration.millis(duration / 2), e -> led.setFill(javafx.scene.paint.Color.GREEN)),
-                new KeyFrame(Duration.millis(duration), e -> led.setFill(javafx.scene.paint.Color.RED))
-        );
-    }
-
-    private void addSpaceKeyFrames(int duration) {
-        blinkingTimeline.getKeyFrames().addAll(
-                new KeyFrame(Duration.ZERO, e -> led.setFill(javafx.scene.paint.Color.RED)),
-                new KeyFrame(Duration.millis(duration), e -> led.setFill(javafx.scene.paint.Color.RED))
-        );
-    }
-
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Erreur");
@@ -115,7 +96,7 @@ public class MorseCodeTranslatorController {
         for (char c : text.toCharArray()) {
             if (c == ' ') {
                 morseText.append("   "); // 3 spaces for word separation
-            } else {
+            } else{
                 int index = -1;
                 for (int i = 0; i < alphabet.length; i++) {
                     if (alphabet[i].charAt(0) == c) {
@@ -128,8 +109,8 @@ public class MorseCodeTranslatorController {
                 }
             }
         }
-        morseText.append("#");
 
         return morseText.toString();
     }
+
 }
