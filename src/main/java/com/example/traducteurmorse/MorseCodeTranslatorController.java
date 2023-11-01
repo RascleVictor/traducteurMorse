@@ -1,9 +1,12 @@
 package com.example.traducteurmorse;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -25,6 +28,18 @@ public class MorseCodeTranslatorController {
 
 
     @FXML
+    public void initialize() {
+        inputField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode() == KeyCode.ENTER) {
+                    translateButtonAction();
+                }
+            }
+        });
+    }
+
+    @FXML
     private void translateButtonAction() {
         String text = inputField.getText().toUpperCase();
         if (!text.matches("^[A-Za-z0-9\\s]+$")) {
@@ -43,20 +58,20 @@ public class MorseCodeTranslatorController {
                 // LED allumée pour un point
                 led.setFill(Color.GREEN);
                 try {
-                    Thread.sleep(dotDuration); // Temps d'allumage pour un point (ajustez selon vos préférences)
+                    Thread.sleep(dotDuration);// Temps d'allumage pour un point (ajustez selon vos préférences)
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                led.setFill(Color.BLACK); // Éteindre la LED
+                led.setFill(Color.RED); // Éteindre la LED
             } else if (c == '-') {
                 // LED allumée pour un tiret
                 led.setFill(Color.GREEN);
                 try {
-                    Thread.sleep(slashDuration); // Temps d'allumage pour un tiret (ajustez selon vos préférences)
+                    Thread.sleep(dashDuration); // Temps d'allumage pour un tiret (ajustez selon vos préférences)
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                led.setFill(Color.BLACK); // Éteindre la LED
+                led.setFill(Color.RED); // Éteindre la LED
             } else if (c == ' ') {
                 // Espace entre les caractères
                 try {
