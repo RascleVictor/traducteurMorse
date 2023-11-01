@@ -21,11 +21,6 @@ public class MorseCodeTranslatorController {
     @FXML
     private Circle led;
 
-    private int dotDuration = 500; // Durée d'un point en ms
-    private int dashDuration = 3 * dotDuration; // Durée d'un tiret en ms
-    private int spaceDuration = 7 * dotDuration; // Durée de l'espace entre les mots en ms
-    private int slashDuration = 3 * dotDuration; // Durée d'un slash en ms
-
 
     @FXML
     public void initialize() {
@@ -54,6 +49,8 @@ public class MorseCodeTranslatorController {
 
     private void flashMorse(String morseCode) {
         for (char c : morseCode.toCharArray()) {
+            // Durée d'un point en ms
+            int dotDuration = 500;
             if (c == '.') {
                 // LED allumée pour un point
                 led.setFill(Color.GREEN);
@@ -63,18 +60,32 @@ public class MorseCodeTranslatorController {
                     e.printStackTrace();
                 }
                 led.setFill(Color.RED); // Éteindre la LED
+                try {
+                    Thread.sleep(dotDuration); // Pause avant le prochain caractère
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             } else if (c == '-') {
                 // LED allumée pour un tiret
                 led.setFill(Color.GREEN);
+                // Durée d'un tiret en ms
+                int dashDuration = 3 * dotDuration;
                 try {
                     Thread.sleep(dashDuration); // Temps d'allumage pour un tiret (ajustez selon vos préférences)
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                led.setFill(Color.RED); // Éteindre la LED
+                led.setFill(Color.RED);// Éteindre la LED
+                try {
+                    Thread.sleep(dashDuration); // Pause avant le prochain caractère
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             } else if (c == ' ') {
                 // Espace entre les caractères
                 try {
+                    // Durée de l'espace entre les mots en ms
+                    int spaceDuration = 7 * dotDuration;
                     Thread.sleep(spaceDuration); // Temps d'attente entre les caractères (ajustez selon vos préférences)
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -82,6 +93,8 @@ public class MorseCodeTranslatorController {
             } else if (c == '/') {
                 // Espace entre les mots
                 try {
+                    // Durée d'un slash en ms
+                    int slashDuration = 3 * dotDuration;
                     Thread.sleep(slashDuration); // Temps d'attente entre les mots (ajustez selon vos préférences)
                 } catch (InterruptedException e) {
                     e.printStackTrace();
