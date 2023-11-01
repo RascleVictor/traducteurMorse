@@ -21,7 +21,6 @@ public class MorseCodeTranslatorController {
     @FXML
     private Circle led;
 
-
     @FXML
     public void initialize() {
         inputField.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -44,7 +43,9 @@ public class MorseCodeTranslatorController {
             String translatedText = translateToMorse(text);
             outputLabel.setText("Morse Code: " + translatedText);
             new Thread(() -> flashMorse(translatedText)).start();
+
         }
+
     }
 
     private void flashMorse(String morseCode) {
